@@ -1,28 +1,82 @@
 from Dijkstra import *
+from Aestrela import *
 
 import matplotlib.pyplot as plt
 import networkx as nx
 
-graph = {
-   "A": {"B": 3, "C": 3},
-   "B": {"A": 3, "D": 3.5, "E": 2.8},
-   "C": {"A": 3, "E": 2.8, "F": 3.5},
-   "D": {"B": 3.5, "E": 3.1, "G": 10},
-   "E": {"B": 2.8, "C": 2.8, "D": 3.1, "G": 7},
-   "F": {"G": 2.5, "C": 3.5},
-   "G": {"F": 2.5, "E": 7, "D": 10},
-}
-
-origem = 'A'
-destino = 'G'
 
 
-distancias,antecessores = dijkstra(graph,origem)
-caminho = caminhos(antecessores,origem,destino)
+import random
+
+
+def gerar_grafo_grade(linhas, colunas, peso_min=1, peso_max=5, seed=42):
+    random.seed(seed)
+
+    grafo = {}
+    coords = {}
+
+    for linha in range(linhas):
+        for coluna in range(colunas):
+            no = f"N{linha}_{coluna}"
+
+            grafo[no] = {}
+            coords[no] = (coluna, linha)
+
+    movimentos = [
+        (-1, 0),
+        (1, 0),
+        (0, -1),
+        (0, 1),
+    ]
+
+    for linha in range(linhas):
+        for coluna in range(colunas):
+            no_atual = f"N{linha}_{coluna}"
+
+            for delta_linha, delta_coluna in movimentos:
+                nova_linha = linha + delta_linha
+                nova_coluna = coluna + delta_coluna
+
+                if (
+                    0 <= nova_linha < linhas
+                    and 0 <= nova_coluna < colunas
+                ):
+                    vizinho = f"N{nova_linha}_{nova_coluna}"
+
+                    # Evita gerar pesos diferentes nos dois sentidos
+                    if no_atual in grafo[vizinho]:
+                        peso = grafo[vizinho][no_atual]
+                    else:
+                        peso = random.randint(peso_min, peso_max)
+
+                    grafo[no_atual][vizinho] = peso
+
+    return grafo, coords
+
+
+grafo, coords = gerar_grafo_grade(
+    linhas=5,
+    colunas=5,
+    peso_min=1,
+    peso_max=5,
+)
+
+
+origem = 'N0_0'
+destino = 'N4_4'
+
+a = int(input('Digite 1 para Dijkstra ou 2 para A*:'))
+
+if a == 1:
+    distancias,antecessores = dijkstra(grafo,origem)
+    caminho = caminhos(antecessores,origem,destino)
+else:
+    distancias, antecessores = a_estrela(grafo,origem,destino,coords)
+    caminho = caminhos(antecessores,origem,destino)
 
 
 G = nx.Graph()
-for node, vizinhos in graph.items():
+for node, vizinhos in grafo.items():
     for vizinho, peso in vizinhos.items():
           G.add_edge(node,vizinho,weight = peso)
 
@@ -53,7 +107,5 @@ nx.draw_networkx_nodes(
     node_color="orange",
     node_size=800,
 )
-
-
-plt.title(f"Grafo")
+print(distancias[destino])
 plt.show()
