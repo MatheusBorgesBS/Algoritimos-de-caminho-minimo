@@ -34,31 +34,31 @@ def dijkstra(grafo, origem):
     
     return distancias,antecessores
 
+def caminhos(antecessores, inicio, destino):
+    caminho = []
+    atual = destino
+    while atual is not None:
+        caminho.append(atual)
+        atual = antecessores[atual]
+    caminho.reverse()
 
+    if not caminho or caminho[0] != inicio:
+        return []
+    return caminho
 
-
-nodes = {
-    'S': {'A': 6,'D': 3},
-    'A': {'B': 3 , 'D': 1},
-    'D': {'A': 2, 'B': 7, 'C': 1},
-    'B': {'C': 5},
-    'C': {} 
+graph = {
+   "A": {"B": 3, "C": 3},
+   "B": {"A": 3, "D": 3.5, "E": 2.8},
+   "C": {"A": 3, "E": 2.8, "F": 3.5},
+   "D": {"B": 3.5, "E": 3.1, "G": 10},
+   "E": {"B": 2.8, "C": 2.8, "D": 3.1, "G": 7},
+   "F": {"G": 2.5, "C": 3.5},
+   "G": {"F": 2.5, "E": 7, "D": 10},
 }
 
+distancias, antecessores = dijkstra(graph, "A")
 
-nodes = {
-    "S": {"A": 6, "D": 3},
-    "A": {"B": 3, "D": 1},
-    "D": {"A": 2, "B": 7, "C": 1},
-    "B": {"C": 5},
-    "C": {}
-}
 
-distancias, antecessores = dijkstra(nodes, "S")
+caminho = caminhos(antecessores,"A","F")
 
-print("Distâncias:")
-print(distancias)
-
-print("Antecessores:")
-print(antecessores)
 
