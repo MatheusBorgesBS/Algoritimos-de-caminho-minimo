@@ -1,5 +1,6 @@
 from Dijkstra import *
 from Aestrela import *
+from kruskal import *
 
 import matplotlib.pyplot as plt
 import networkx as nx
@@ -9,70 +10,87 @@ import networkx as nx
 import random
 
 
-def gerar_grafo_grade(linhas, colunas, peso_min=1, peso_max=5, seed=42):
+def gerar_grafo_aleatorio(
+    quantidade_nos,
+    arestas_extras=5,
+    peso_min=1,
+    peso_max=10,
+    seed=42,
+):
     random.seed(seed)
 
-    grafo = {}
-    coords = {}
+    grafo = {
+        f"N{i}": {}
+        for i in range(quantidade_nos)
+    }
 
-    for linha in range(linhas):
-        for coluna in range(colunas):
-            no = f"N{linha}_{coluna}"
+    coords = {
+        no: (
+            random.uniform(0, 10),
+            random.uniform(0, 10),
+        )
+        for no in grafo
+    }
 
-            grafo[no] = {}
-            coords[no] = (coluna, linha)
+    nos = list(grafo.keys())
 
-    movimentos = [
-        (-1, 0),
-        (1, 0),
-        (0, -1),
-        (0, 1),
-    ]
+    for i in range(1, len(nos)):
+        no_atual = nos[i]
+        no_anterior = random.choice(nos[:i])
 
-    for linha in range(linhas):
-        for coluna in range(colunas):
-            no_atual = f"N{linha}_{coluna}"
+        peso = random.randint(peso_min, peso_max)
 
-            for delta_linha, delta_coluna in movimentos:
-                nova_linha = linha + delta_linha
-                nova_coluna = coluna + delta_coluna
+        grafo[no_atual][no_anterior] = peso
+        grafo[no_anterior][no_atual] = peso
 
-                if (
-                    0 <= nova_linha < linhas
-                    and 0 <= nova_coluna < colunas
-                ):
-                    vizinho = f"N{nova_linha}_{nova_coluna}"
+    adicionadas = 0
 
-                    # Evita gerar pesos diferentes nos dois sentidos
-                    if no_atual in grafo[vizinho]:
-                        peso = grafo[vizinho][no_atual]
-                    else:
-                        peso = random.randint(peso_min, peso_max)
+    while adicionadas < arestas_extras:
+        no1, no2 = random.sample(nos, 2)
 
-                    grafo[no_atual][vizinho] = peso
+        if no2 in grafo[no1]:
+            continue
+
+        peso = random.randint(peso_min, peso_max)
+
+        grafo[no1][no2] = peso
+        grafo[no2][no1] = peso
+
+        adicionadas += 1
 
     return grafo, coords
 
-
-grafo, coords = gerar_grafo_grade(
-    linhas=5,
-    colunas=5,
+grafo, coords = gerar_grafo_aleatorio(
+    quantidade_nos=12,
+    arestas_extras=10,
     peso_min=1,
-    peso_max=5,
+    peso_max=10,
 )
 
 
-origem = 'N0_0'
-destino = 'N4_4'
+origem = 'N0'
+destino = 'N11'
 
-a = int(input('Digite 1 para Dijkstra ou 2 para A*:'))
+a = int(input('Digite 1 para Dijkstra, 2 para A* ou 3 para MST (Kruskal): '))
+
 
 if a == 1:
-    distancias,antecessores = dijkstra(grafo,origem)
-    caminho = caminhos(antecessores,origem,destino)
+    distancias, antecessores = dijkstra(grafo, origem)
+    caminho = caminhos(antecessores, origem, destino)
+    arestas_destaque = list(zip(caminho, caminho[1:]))
+    nos_destaque = caminho
+    resultado = f'Custo do caminho Dijkstra: {distancias[destino]}'
+elif a == 2:
+    distancias, antecessores = a_estrela(grafo, origem, destino, coords)
+    caminho = caminhos(antecessores, origem, destino)
+    arestas_destaque = list(zip(caminho, caminho[1:]))
+    nos_destaque = caminho
+    resultado = f'Custo do caminho A*: {distancias[destino]}'
 else:
-    distancias, antecessores = a_estrela(grafo,origem,destino,coords)
-    caminho = caminhos(antecessores,origem,destino)
+    mst, custo_total = kruskal(grafo)
+    arestas_destaque = [(no_a, no_b) for no_a, no_b, _ in mst]
+    nos_destaque = []
+    resultado = f'Custo total da MST (Kruskal): {custo_total}'
 
 
 G = nx.Graph()
@@ -89,23 +107,21 @@ nx.draw(G, pos, with_labels=True, node_color='lightblue', node_size=700, font_si
 labels = nx.get_edge_attributes(G, 'weight')
 nx.draw_networkx_edge_labels(G, pos, edge_labels=labels)
 
-arestas_caminho = list(zip(caminho,caminho[1:]))
-# Destaca as arestas do menor caminho
 nx.draw_networkx_edges(
     G,
     pos,
-    edgelist=arestas_caminho,
+    edgelist=arestas_destaque,
     edge_color="red",
     width=4,
 )
 
-# Destaca os nós do menor caminho
-nx.draw_networkx_nodes(
-    G,
-    pos,
-    nodelist=caminho,
-    node_color="orange",
-    node_size=800,
-)
-print(distancias[destino])
+if nos_destaque:
+    nx.draw_networkx_nodes(
+        G,
+        pos,
+        nodelist=nos_destaque,
+        node_color="orange",
+        node_size=800,
+    )
+print(resultado)
 plt.show()
