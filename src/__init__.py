@@ -1,7 +1,7 @@
-from .Dijkstra import dijkstra, caminhos
-from .Aestrela import a_estrela, distancia_euclidiana
-from .kruskal import kruskal
-from .nearest_neighbors import nearestNeighbors
+from .shortest_path import dijkstra, caminhos, a_estrela, distancia_euclidiana
+from .mst import kruskal, boruvka, prim
+from .tsp import nearestNeighbors
+from .graph import gerar_grafo_conectado, gerar_grafo_completo
 
 
 __all__ = [
@@ -10,6 +10,9 @@ __all__ = [
     "a_estrela",
     "distancia_euclidiana",
     "kruskal",
+    "prim",
+    'boruvka',
     "nearestNeighbors",
+    'gerar_grafo_conectado',
+    'gerar_grafo_completo',
 ]
-
