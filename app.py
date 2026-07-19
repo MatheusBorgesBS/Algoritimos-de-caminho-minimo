@@ -20,6 +20,7 @@ from src import (
     ford_fulkerson,
     gerar_grafo_conectado,
     gerar_grafo_completo,
+    gerar_grafo_direcionado,
 )
 from src.visualization.visualizar import desenhar_grafo
 
@@ -95,10 +96,20 @@ def escolher_no(mensagem, nos):
 # ---------------------------------------------------------------------------
 
 def gerar_grafo(algoritmo, quantidade_nos, seed):
-    # TSP e fluxo máximo precisam de um grafo completo (todo mundo conectado).
-    if algoritmo in (6, 7):
+    # TSP precisa de um grafo completo (todo mundo conectado).
+    if algoritmo == 6:
         return gerar_grafo_completo(
             quantidade_nos=quantidade_nos,
+            seed=seed,
+        )
+
+    # Fluxo máximo precisa de um grafo direcionado com capacidades.
+    if algoritmo == 7:
+        return gerar_grafo_direcionado(
+            quantidade_nos=quantidade_nos,
+            arestas_extras=10,
+            capacidade_min=1,
+            capacidade_max=10,
             seed=seed,
         )
 

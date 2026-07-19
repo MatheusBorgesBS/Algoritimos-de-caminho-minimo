@@ -44,5 +44,7 @@ def kruskal(grafo):
 
         if len(mst) == len(grafo) - 1:
             break
+    if len(mst) != len(grafo) - 1:
+        raise ValueError("O grafo não é conexo.")
 
     return mst, custo_total

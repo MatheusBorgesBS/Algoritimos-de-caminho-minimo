@@ -73,6 +73,23 @@ def ford_fulkerson(grafo, fonte, sumidouro):
     if sumidouro not in grafo:
         raise ValueError("O sumidouro não existe no grafo.")
 
+    if fonte == sumidouro:
+        raise ValueError(
+            "A fonte e o sumidouro devem ser nós diferentes."
+        )
+
+    for vizinhos in grafo.values():
+        for destino, capacidade in vizinhos.items():
+            if destino not in grafo:
+                raise ValueError(
+                    f"O nó {destino} não está definido no grafo."
+                )
+
+            if capacidade < 0:
+                raise ValueError(
+                    "As capacidades não podem ser negativas."
+                )
+
     residual = criar_rede_residual(grafo)
 
     fluxo_maximo = 0
