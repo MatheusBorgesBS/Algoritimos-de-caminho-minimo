@@ -1,4 +1,3 @@
-
 def prim(grafo, origem):
     visitados = {origem}
     mst = []
