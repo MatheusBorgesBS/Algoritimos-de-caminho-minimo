@@ -5,8 +5,12 @@ com visualização interativa dos grafos e da resolução passo a passo.
 
 ## Como rodar
 
-A partir da raiz do projeto:
+A partir da raiz do projeto, Primeiro instale as dependências:
 
+```bash
+pip install -r requirements.txt
+```
+E depois execute a aplicação
 ```bash
 python app.py
 ```
@@ -27,6 +31,48 @@ O programa vai perguntar, em sequência:
 5. Dependendo do algoritmo, os **nós envolvidos** (inicial/final, fonte/sumidouro).
 
 Ao digitar um nó você pode usar `N5` ou só `5`.
+## Exemplos de uso
+### Dijkstra
+<table>
+  <tr>
+    <td width="40%" align="center">
+      <strong>Execução no terminal</strong>
+    </td>
+    <td width="60%" align="center">
+      <strong>Grafo e caminho encontrado</strong>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="imagens/exemplo_uso.png" width="100%">
+    </td>
+    <td align="center">
+      <img src="imagens/exemplo_output.png" width="100%">
+    </td>
+  </tr>
+</table>
+
+### Outro exemplo de uso com Vizinho Mais Próximo
+### Vizinho Mais Próximo
+
+<table>
+  <tr>
+    <td width="40%" align="center">
+      <strong>Execução no terminal</strong>
+    </td>
+    <td width="60%" align="center">
+      <strong>Rota aproximada gerada</strong>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="imagens/exemplo_uso_1.png" width="100%">
+    </td>
+    <td align="center">
+      <img src="imagens/exemplo_output_1.png" width="100%">
+    </td>
+  </tr>
+</table>
 
 ## A seed
 
