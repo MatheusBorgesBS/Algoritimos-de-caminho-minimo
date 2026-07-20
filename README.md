@@ -52,7 +52,7 @@ Ao digitar um nó você pode usar `N5` ou só `5`.
   </tr>
 </table>
 
-### Outro exemplo de uso com Vizinho Mais Próximo
+### Outro exemplo de uso:
 ### Vizinho Mais Próximo
 
 <table>
